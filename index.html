@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="免費線上簡繁字幕轉換工具，支援 SRT、VTT、ASS、SSA、TXT 與 ZIP 批次轉換。">
+    <title>字幕簡繁轉換工具</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Browser-only subtitle tool</p>
+        <h1>字幕簡繁轉換工具</h1>
+      </div>
+      <span class="status-pill" id="libraryStatus">載入轉換核心中</span>
+    </header>
+
+    <main class="layout">
+      <section class="tool-panel" aria-labelledby="text-title">
+        <div class="section-head">
+          <h2 id="text-title">文字轉換</h2>
+          <button id="swapTextButton" class="ghost-button" type="button">交換</button>
+        </div>
+
+        <div class="controls">
+          <label>
+            方向
+            <select id="directionSelect">
+              <option value="cn2tw">簡體 → 繁體臺灣</option>
+              <option value="tw2cn">繁體 → 簡體</option>
+            </select>
+          </label>
+          <label class="check-row">
+            <input id="cleanupTextCheckbox" type="checkbox">
+            清理字幕樣式碼
+          </label>
+        </div>
+
+        <div class="editor-grid">
+          <label>
+            輸入
+            <textarea id="sourceText" spellcheck="false" placeholder="貼上簡體或繁體文字，也可以貼字幕內容。"></textarea>
+          </label>
+          <label>
+            輸出
+            <textarea id="outputText" spellcheck="false" readonly></textarea>
+          </label>
+        </div>
+
+        <div class="actions">
+          <button id="convertTextButton" type="button">轉換文字</button>
+          <button id="copyOutputButton" class="secondary-button" type="button">複製結果</button>
+          <button id="downloadTextButton" class="secondary-button" type="button">下載 TXT</button>
+        </div>
+      </section>
+
+      <section class="tool-panel" aria-labelledby="file-title">
+        <div class="section-head">
+          <h2 id="file-title">字幕檔與 ZIP 批次</h2>
+          <span class="muted">SRT / VTT / ASS / SSA / TXT / ZIP</span>
+        </div>
+
+        <label id="dropZone" class="drop-zone">
+          <input id="fileInput" type="file" multiple accept=".srt,.vtt,.ass,.ssa,.txt,.zip">
+          <span>拖曳檔案到這裡，或點擊選擇檔案</span>
+        </label>
+
+        <div class="controls">
+          <label class="check-row">
+            <input id="cleanupFileCheckbox" type="checkbox" checked>
+            轉換前清理字幕樣式碼
+          </label>
+          <button id="convertFilesButton" type="button">轉換檔案</button>
+        </div>
+
+        <div id="fileSummary" class="summary">尚未選擇檔案。</div>
+        <div id="resultsList" class="results-list" aria-live="polite"></div>
+      </section>
+
+      <aside class="info-panel">
+        <section>
+          <h2>隱私</h2>
+          <p>檔案在你的瀏覽器內處理，不會上傳到伺服器。公開測試版使用 CDN 載入 OpenCC 與 ZIP 函式庫。</p>
+        </section>
+        <section>
+          <h2>廣告預留</h2>
+          <div class="ad-slot">Ad slot</div>
+        </section>
+        <section>
+          <h2>限制</h2>
+          <p>大型 ZIP 或超大字幕檔會受瀏覽器記憶體限制。影片轉檔、音軌處理仍需要桌面版工具。</p>
+        </section>
+      </aside>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/opencc-js@1.3.2-next.0/dist/umd/full.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script src="core.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
+
