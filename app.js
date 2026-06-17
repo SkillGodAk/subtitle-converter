@@ -20,7 +20,10 @@
     dropZone: document.getElementById("dropZone"),
     convertFilesButton: document.getElementById("convertFilesButton"),
     fileSummary: document.getElementById("fileSummary"),
-    resultsList: document.getElementById("resultsList")
+    selectedFilesList: document.getElementById("selectedFilesList"),
+    resultsList: document.getElementById("resultsList"),
+    tabButtons: Array.from(document.querySelectorAll(".tab-button")),
+    panels: Array.from(document.querySelectorAll(".tool-panel"))
   };
 
   function setStatus(message, kind) {
@@ -71,14 +74,26 @@
     downloadBlob(new Blob([text], { type: "text/plain;charset=utf-8" }), filename);
   }
 
+  function renderSelectedFiles(files) {
+    els.selectedFilesList.replaceChildren();
+    files.forEach((file) => {
+      const item = document.createElement("li");
+      const type = core.isZip(file.name) ? "ZIP" : core.getExtension(file.name).replace(".", "").toUpperCase();
+      item.textContent = `${file.name} (${type || "未知格式"})`;
+      els.selectedFilesList.append(item);
+    });
+  }
+
   function describeFiles(files) {
     if (!files.length) {
       els.fileSummary.textContent = "尚未選擇檔案。";
+      renderSelectedFiles([]);
       return;
     }
     const subtitleCount = files.filter((file) => core.isSupportedSubtitle(file.name)).length;
     const zipCount = files.filter((file) => core.isZip(file.name)).length;
     els.fileSummary.textContent = `已選擇 ${files.length} 個檔案：${subtitleCount} 個字幕檔，${zipCount} 個 ZIP。`;
+    renderSelectedFiles(files);
   }
 
   function setFiles(fileList) {
@@ -145,11 +160,12 @@
       return;
     }
     if (!state.files.length) {
-      els.fileSummary.textContent = "請先選擇字幕檔或 ZIP。";
+      els.fileSummary.textContent = "請先匯入字幕檔或 ZIP。";
       return;
     }
 
     els.convertFilesButton.disabled = true;
+    els.convertFilesButton.textContent = "轉換中";
     els.resultsList.replaceChildren();
     const options = { cleanup: els.cleanupFileCheckbox.checked };
 
@@ -163,15 +179,28 @@
           addResult(`${file.name}.txt`, "不支援的格式，已略過", new Blob(["Unsupported file"], { type: "text/plain" }));
         }
       }
-      els.fileSummary.textContent = "轉換完成，可以下載結果。";
+      els.fileSummary.textContent = "批量轉換完成，可以下載結果。";
     } catch (error) {
       els.fileSummary.textContent = `轉換失敗：${error.message}`;
     } finally {
       els.convertFilesButton.disabled = false;
+      els.convertFilesButton.textContent = "開始批量轉換";
     }
   }
 
+  function activateTab(panelId) {
+    els.tabButtons.forEach((button) => {
+      button.classList.toggle("active", button.dataset.tab === panelId);
+    });
+    els.panels.forEach((panel) => {
+      panel.classList.toggle("active-panel", panel.id === panelId);
+    });
+  }
+
   function bindEvents() {
+    els.tabButtons.forEach((button) => {
+      button.addEventListener("click", () => activateTab(button.dataset.tab));
+    });
     els.convertTextButton.addEventListener("click", convertCurrentText);
     els.directionSelect.addEventListener("change", () => {
       if (els.sourceText.value) {
@@ -212,4 +241,3 @@
   initConverters();
   bindEvents();
 })();
-
