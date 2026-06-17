@@ -1,3 +1,1 @@
-# Google AdSense approval is not active yet.
-# After your AdSense account is approved, replace this file with:
-# google.com, pub-YOUR_PUBLISHER_ID, DIRECT, f08c47fec0942fa0
+google.com, pub-3281840830491656, DIRECT, f08c47fec0942fa0
